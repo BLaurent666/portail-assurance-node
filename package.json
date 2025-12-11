@@ -5,7 +5,7 @@
   "description": "Portail assurance - backend API Node.js (monolithe simple)",
   "main": "backend/server.js",
   "scripts": {
-    "start": "node backend/server.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

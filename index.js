@@ -17,6 +17,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get('/api/_debug', (req, res) => {
+  res.json({ ok: true, version: 'v-auth-1' });
+});
+
 // Routes publiques / de base
 app.get('/', (req, res) => {
   res.send('API Portail assurance – en ligne ✅');

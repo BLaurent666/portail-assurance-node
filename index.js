@@ -1,38 +1,31 @@
 // index.js
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
 
-// On récupère router et authGuard depuis auth.js
-const authModule = require('./routes/auth');
-const authRoutes = authModule.router;
-const { authGuard } = authModule;
+const app = express();
+app.use(express.json());
 
+// ✅ Debug route (pour vérifier immédiatement que c’est le bon code)
+app.get('/api/_debug', (req, res) => {
+  res.json({ ok: true, version: '2025-12-12', routes: ['auth', 'clients', 'policies', 'claims'] });
+});
+
+// ✅ Import des routes
+const { router: authRoutes } = require('./routes/auth');
 const clientsRoutes = require('./routes/clients');
 const policiesRoutes = require('./routes/policies');
 const claimsRoutes = require('./routes/claims');
 
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-app.get('/api/_debug', (req, res) => {
-  res.json({ ok: true, version: 'v-auth-1' });
-});
-
-// Routes publiques / de base
-app.get('/', (req, res) => {
-  res.send('API Portail assurance – en ligne ✅');
-});
-
-// Routes d’authentification
+// ✅ Montage des routes
 app.use('/api/auth', authRoutes);
-
-// Routes protégées par JWT (dans les fichiers, on réutilise authGuard)
 app.use('/api/clients', clientsRoutes);
 app.use('/api/policies', policiesRoutes);
 app.use('/api/claims', claimsRoutes);
+
+// Page d’accueil
+app.get('/', (req, res) => {
+  res.send('API Portail assurance – en ligne ✅');
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

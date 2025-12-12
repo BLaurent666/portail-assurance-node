@@ -8,11 +8,11 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1d';
 
-// ⚠️ Pour l’instant : un utilisateur “en dur” (en attendant la DB)
+// ⚠️ User “en dur” pour l’instant (à remplacer par la DB plus tard)
 const fakeUser = {
   id: 1,
   email: 'agent@courtier.fr',
-  passwordHash: bcrypt.hashSync('motdepasse123', 10), // à changer plus tard
+  passwordHash: bcrypt.hashSync('motdepasse123', 10),
   role: 'agent'
 };
 
@@ -24,7 +24,7 @@ function signToken(user) {
   );
 }
 
-// Login
+// POST /api/auth/login
 router.post('/login', (req, res) => {
   const { email, password } = req.body || {};
   if (!email || !password) {
@@ -48,7 +48,7 @@ router.post('/login', (req, res) => {
   });
 });
 
-// Middleware de protection (à réutiliser dans les autres routes)
+// Middleware de protection JWT
 function authGuard(req, res, next) {
   const header = req.headers.authorization || '';
   const [, token] = header.split(' '); // "Bearer xxx"
@@ -66,4 +66,8 @@ function authGuard(req, res, next) {
   }
 }
 
-module.exports = { router, authGuard };
+// 🔴 IMPORTANT : on exporte les deux
+module.exports = {
+  router,
+  authGuard
+};
